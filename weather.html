@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Page</title>
+    <link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0px;
+        }
+        body {
+            background-color: #000;
+        }
+        #container, #contain {
+            width: 30%;
+            background-color: #303b51;
+            color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 50px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        .top, .middle, .bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #temp {
+            font-size: 4.5rem;
+        }
+        #wrap {
+            width: 20%;
+            background-color: #506079;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 10px;
+        }
+        p {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="contain">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+    </div>
+    <div id="container">
+         <div class="top">
+            <p><i class="fa fa-map-marker"></i> <span id="location">City, Country</span></p>
+            <p id="description">Weather Description</p>
+        </div>
+        <br><br>
+        <div class="middle">
+            <p id="temp"><span id="temperature">0</span>&deg;C</p>
+            <!-- <i class="fa fa-cloud fa-5x"></i> -->
+            <img id="image" src="rain.webp" alt="">
+        </div>
+        <br><br>
+         <div class="bottom">
+            <div id="wrap">
+                <p>Date</p>
+            </div>
+            <div id="wrap">
+                <p>Time</p>
+            </div>
+            <div id="wrap">
+                <p>Greet</p>
+            </div>
+         </div>
+    </div>
+
+    <script type="module">
+
+        document.getElementById("container").style = "display:none";
+
+        var loc = prompt("Enter location");
+
+        setTimeout(() => {
+            document.getElementById("container").style = "display:block";
+            document.getElementById("contain").style = "display:none";
+        }, 4000);
+
+        const url = "https://api.worldweatheronline.com/premium/v1/weather.ashx?key=149d5109fd324c8183c160914241610&format=json&q=" + loc;
+        const options = {
+            method: 'GET',
+            headers: {accept: 'application/json'}
+        };
+
+        try {
+            const response = await fetch(url, options);
+            const result = await response.text();
+            let res = JSON.parse(result);
+            var location = res.data.request[0].query;
+            var description = res.data.current_condition[0].weatherDesc[0].value;
+            var image = res.data.current_condition[0].weatherIconUrl[0].value;
+            var temperature = res.data.current_condition[0].temp_C;
+            document.getElementById("location").innerHTML = location;
+            document.getElementById("description").innerHTML = description;
+            document.getElementById("temperature").innerHTML = temperature;
+            document.getElementById("image").src = image;
+            // console.log(image);
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    </script>
+</body>
+</html>
